@@ -16,10 +16,13 @@ class MyWindow(QWidget):
         self.enter_name.setPlaceholderText("Add name")
         row1.addWidget(self.enter_name)
 
-        self.add_button = QPushButton("Add")
-        self.remove_button = QPushButton("Remove")
-        row1.addWidget(self.add_button)
-        row1.addWidget(self.remove_button)
+        add_button = QPushButton("Add")
+        add_button.clicked.connect(self.add_name)
+        self.enter_name.returnPressed.connect(self.add_name)
+        remove_button = QPushButton("Remove")
+        remove_button.clicked.connect(self.remove_name)
+        row1.addWidget(add_button)
+        row1.addWidget(remove_button)
 
         row2 = QHBoxLayout()
 
@@ -115,6 +118,17 @@ class MyWindow(QWidget):
                 background-color: #005fa3;
             }
         """)
+
+    def add_name(self):
+        text = self.enter_name.text().strip()
+        if text:
+            self.input_list.addItem(text)
+            self.enter_name.clear()
+
+    def remove_name(self):
+        selected = self.input_list.currentRow()
+        if selected >= 0:
+            self.input_list.takeItem(selected)
 
 app = QApplication(sys.argv)
 window = MyWindow()
