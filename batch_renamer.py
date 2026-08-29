@@ -149,6 +149,8 @@ class MyWindow(QWidget):
         return name
 
     def generate_preview(self):
+        if self.input_list.count() == 0:
+            return
         self.preview_list.clear()
         for i in range(self.input_list.count()):
             file = self.input_list.item(i).text()
