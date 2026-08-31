@@ -166,25 +166,25 @@ class MyWindow(QWidget):
             return
         self.preview_list.clear()
 
-        if self.none_rbutton.isChecked():
-            for i in range(self.input_list.count()):
-                file = self.input_list.item(i).text()
-                new_name = self.generate_new_name(file)
-                self.preview_list.addItem(new_name)
-
         if self.sequential_rbutton.isChecked():
             for i in range(self.input_list.count()):
                 file = self.input_list.item(i).text()
                 new_name = self.generate_new_name(file, i + 1)
                 self.preview_list.addItem(new_name)
 
-        if self.pername_rbutton.isChecked():
+        elif self.pername_rbutton.isChecked():
             counts = {}
 
             for i in range(self.input_list.count()):
                 file = self.input_list.item(i).text()
                 counts[file] = counts.get(file, 0) + 1
                 new_name = self.generate_new_name(file, counts[file])
+                self.preview_list.addItem(new_name)
+
+        else:
+            for i in range(self.input_list.count()):
+                file = self.input_list.item(i).text()
+                new_name = self.generate_new_name(file)
                 self.preview_list.addItem(new_name)
             
 
