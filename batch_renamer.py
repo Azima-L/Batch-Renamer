@@ -30,7 +30,7 @@ class MyWindow(QWidget):
         self.preview_list = QListWidget()
 
         row2_column1 = QVBoxLayout()
-        row2_column1.addWidget(QLabel("Input Names"))
+        row2_column1.addWidget(QLabel("Input names"))
         row2_column1.addWidget(self.input_list)
 
         row2_column2 = QVBoxLayout()
@@ -80,7 +80,7 @@ class MyWindow(QWidget):
         self.pername_rbutton = QRadioButton("Per-name")
         self.none_rbutton.setChecked(True)
 
-        row4_column1.addWidget(QLabel("\nAuto-number mode:"))
+        row4_column1.addWidget(QLabel("Auto-number mode:"))
         row4_column1.addWidget(self.none_rbutton)
         row4_column1.addWidget(self.sequential_rbutton)
         row4_column1.addWidget(self.pername_rbutton)
@@ -98,8 +98,11 @@ class MyWindow(QWidget):
 
         master_layout.addLayout(row1)
         master_layout.addLayout(row2)
+        master_layout.addSpacing(6)
         master_layout.addLayout(row3)
+        master_layout.addSpacing(6)
         master_layout.addLayout(row4)
+        master_layout.addSpacing(10)
         master_layout.addLayout(row5)
 
         self.setStyleSheet("""
@@ -138,10 +141,13 @@ class MyWindow(QWidget):
         if text:
             self.input_list.addItem(text)
             self.enter_name.clear()
+            print(f'[INFO] Added "{text}" to the input name list.')
 
     def remove_name(self):
         selected = self.input_list.currentRow()
         if selected >= 0:
+            item = self.input_list.item(selected)
+            print(f'[INFO] Removed "{item.text()}" from the input name list.')
             self.input_list.takeItem(selected)
 
     def generate_new_name(self, name, number=None):
@@ -166,9 +172,12 @@ class MyWindow(QWidget):
 
     def generate_preview(self):
         if self.input_list.count() == 0:
+            print('[WARN] The input list is empty. Add at least one asset before previewing.')
             return
         self.preview_list.clear()
         self.preview_results = []
+
+        print('[INFO] New assets have been previewed.')
 
         if self.sequential_rbutton.isChecked():
             for i in range(self.input_list.count()):
@@ -179,7 +188,6 @@ class MyWindow(QWidget):
 
         elif self.pername_rbutton.isChecked():
             counts = {}
-
             for i in range(self.input_list.count()):
                 file = self.input_list.item(i).text()
                 counts[file] = counts.get(file, 0) + 1
@@ -196,23 +204,30 @@ class MyWindow(QWidget):
 
     def export_log(self):
         if not self.preview_results:
+            print('[WARN] No assets are available. Preview assets first.')
             return
 
         path, _ = QFileDialog.getSaveFileName(
             self,
-        "Save Log File",
-        "batch_rename_log.txt",
-        "Text Files (*.txt)"
+            "Save Log File",
+            "batch_rename_log.txt",
+            "Text Files (*.txt)"
         )
 
         if path:
-            with open(path, "w") as f:
-                f.write("Batch Rename Report\n")
-                f.write("===================\n")
-                for old_name, new_name in self.preview_results:
-                    f.write(f"{old_name} → {new_name}\n")
-                f.write(f"\nTotal: {len(self.preview_results)} assets renamed")
-            
+            try:
+                with open(path, "w") as f:
+                    f.write("Batch Rename Report\n")
+                    f.write("===================\n")
+                    for old_name, new_name in self.preview_results:
+                        f.write(f"{old_name} → {new_name}\n")
+                    f.write(f"\nTotal: {len(self.preview_results)} assets renamed")
+                print('[INFO] Batch Rename Report has been created.')
+            except Exception as e:
+                print(f'[ERROR] {e}')
+        else:
+            print(f'[INFO] Batch Rename Report has been cancelled.')
+
 
 app = QApplication(sys.argv)
 window = MyWindow()
