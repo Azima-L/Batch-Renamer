@@ -141,7 +141,7 @@ class MyWindow(QWidget):
         if selected >= 0:
             self.input_list.takeItem(selected)
 
-    def generate_new_name(self, name):
+    def generate_new_name(self, name, number=None):
         prefix = self.prefix_input.text()
         suffix = self.suffix_input.text()
         find = self.find_input.text()
@@ -152,6 +152,9 @@ class MyWindow(QWidget):
 
         if prefix:
             name = prefix + name
+
+        if number is not None:
+            name = name + "_" + str(number).zfill(2)
             
         if suffix:
             name = name + suffix
@@ -162,10 +165,27 @@ class MyWindow(QWidget):
         if self.input_list.count() == 0:
             return
         self.preview_list.clear()
-        for i in range(self.input_list.count()):
-            file = self.input_list.item(i).text()
-            new_name = self.generate_new_name(file)
-            self.preview_list.addItem(new_name)
+
+        if self.none_rbutton.isChecked():
+            for i in range(self.input_list.count()):
+                file = self.input_list.item(i).text()
+                new_name = self.generate_new_name(file)
+                self.preview_list.addItem(new_name)
+
+        if self.sequential_rbutton.isChecked():
+            for i in range(self.input_list.count()):
+                file = self.input_list.item(i).text()
+                new_name = self.generate_new_name(file, i + 1)
+                self.preview_list.addItem(new_name)
+
+        if self.pername_rbutton.isChecked():
+            counts = {}
+
+            for i in range(self.input_list.count()):
+                file = self.input_list.item(i).text()
+                counts[file] = counts.get(file, 0) + 1
+                new_name = self.generate_new_name(file, counts[file])
+                self.preview_list.addItem(new_name)
             
 
 app = QApplication(sys.argv)
