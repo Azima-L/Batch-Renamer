@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QRadioButton, QPushButton
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QRadioButton, QPushButton, QFileDialog
 import sys
 
 class MyWindow(QWidget):
@@ -80,7 +80,7 @@ class MyWindow(QWidget):
         self.pername_rbutton = QRadioButton("Per-name")
         self.none_rbutton.setChecked(True)
 
-        row4_column1.addWidget(QLabel("Auto-number mode:"))
+        row4_column1.addWidget(QLabel("\nAuto-number mode:"))
         row4_column1.addWidget(self.none_rbutton)
         row4_column1.addWidget(self.sequential_rbutton)
         row4_column1.addWidget(self.pername_rbutton)
@@ -92,6 +92,7 @@ class MyWindow(QWidget):
         preview_button = QPushButton("Preview")
         preview_button.clicked.connect(self.generate_preview)
         export_button = QPushButton("Export")
+        export_button.clicked.connect(self.export_log)
         row5.addWidget(preview_button)
         row5.addWidget(export_button)
 
@@ -130,6 +131,8 @@ class MyWindow(QWidget):
             }
         """)
 
+        self.preview_results = []
+
     def add_name(self):
         text = self.enter_name.text().strip()
         if text:
@@ -165,12 +168,14 @@ class MyWindow(QWidget):
         if self.input_list.count() == 0:
             return
         self.preview_list.clear()
+        self.preview_results = []
 
         if self.sequential_rbutton.isChecked():
             for i in range(self.input_list.count()):
                 file = self.input_list.item(i).text()
                 new_name = self.generate_new_name(file, i + 1)
                 self.preview_list.addItem(new_name)
+                self.preview_results.append((file, new_name))
 
         elif self.pername_rbutton.isChecked():
             counts = {}
@@ -180,12 +185,33 @@ class MyWindow(QWidget):
                 counts[file] = counts.get(file, 0) + 1
                 new_name = self.generate_new_name(file, counts[file])
                 self.preview_list.addItem(new_name)
+                self.preview_results.append((file, new_name))
 
         else:
             for i in range(self.input_list.count()):
                 file = self.input_list.item(i).text()
                 new_name = self.generate_new_name(file)
                 self.preview_list.addItem(new_name)
+                self.preview_results.append((file, new_name))
+
+    def export_log(self):
+        if not self.preview_results:
+            return
+
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+        "Save Log File",
+        "batch_rename_log.txt",
+        "Text Files (*.txt)"
+        )
+
+        if path:
+            with open(path, "w") as f:
+                f.write("Batch Rename Report\n")
+                f.write("===================\n")
+                for old_name, new_name in self.preview_results:
+                    f.write(f"{old_name} → {new_name}\n")
+                f.write(f"\nTotal: {len(self.preview_results)} assets renamed")
             
 
 app = QApplication(sys.argv)
