@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QCheckBox, QPushButton
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QRadioButton, QPushButton
 import sys
 
 class MyWindow(QWidget):
@@ -74,8 +74,18 @@ class MyWindow(QWidget):
 
         row4 = QHBoxLayout()
 
-        self.auto_number_checkbox = QCheckBox("Auto-number")
-        row4.addWidget(self.auto_number_checkbox)
+        row4_column1 = QVBoxLayout()
+        self.none_rbutton = QRadioButton("None")
+        self.sequential_rbutton = QRadioButton("Sequential")
+        self.pername_rbutton = QRadioButton("Per-name")
+        self.none_rbutton.setChecked(True)
+
+        row4_column1.addWidget(QLabel("Auto-number mode:"))
+        row4_column1.addWidget(self.none_rbutton)
+        row4_column1.addWidget(self.sequential_rbutton)
+        row4_column1.addWidget(self.pername_rbutton)
+
+        row4.addLayout(row4_column1)
 
         row5 = QHBoxLayout()
 
