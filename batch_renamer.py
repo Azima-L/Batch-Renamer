@@ -1,10 +1,11 @@
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QRadioButton, QPushButton, QFileDialog
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QListWidgetItem, QRadioButton, QPushButton, QFileDialog
+from PySide6.QtGui import QColor
 import sys
 
 class MyWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Batch Renamer")
+        self.setWindowTitle("Batch Renamer - Pipeline Tool")
         self.setFixedSize(350, 400)
 
         master_layout = QVBoxLayout()
@@ -75,9 +76,9 @@ class MyWindow(QWidget):
         row4 = QHBoxLayout()
 
         row4_column1 = QVBoxLayout()
-        self.none_rbutton = QRadioButton("None")
-        self.sequential_rbutton = QRadioButton("Sequential")
-        self.pername_rbutton = QRadioButton("Per-name")
+        self.none_rbutton = QRadioButton(" None")
+        self.sequential_rbutton = QRadioButton(" Sequential")
+        self.pername_rbutton = QRadioButton(" Per-name")
         self.none_rbutton.setChecked(True)
 
         row4_column1.addWidget(QLabel("Auto-number mode:"))
@@ -132,7 +133,17 @@ class MyWindow(QWidget):
             QPushButton:hover {
                 background-color: #005fa3;
             }
+            QRadioButton::indicator {
+                border: 1px solid #4d4d4d;
+                border-radius: 6px;
+                width: 10px;
+                height: 10px;
+            }
+            QRadioButton::indicator:checked {
+                background-color: #0078d4;
+            }
         """)
+
 
         self.preview_results = []
 
@@ -170,6 +181,14 @@ class MyWindow(QWidget):
 
         return name
 
+    def add_preview_item(self, file, new_name):
+        """Creates a coloured list item and appends the result pair to preview_results."""
+        item = QListWidgetItem(new_name)
+        self.preview_list.addItem(item)
+        self.preview_results.append((file, new_name))
+        if new_name != file:
+            item.setForeground(QColor("#4ec94e"))
+
     def generate_preview(self):
         if self.input_list.count() == 0:
             print('[WARN] The input list is empty. Add at least one asset before previewing.')
@@ -183,8 +202,7 @@ class MyWindow(QWidget):
             for i in range(self.input_list.count()):
                 file = self.input_list.item(i).text()
                 new_name = self.generate_new_name(file, i + 1)
-                self.preview_list.addItem(new_name)
-                self.preview_results.append((file, new_name))
+                self.add_preview_item(file, new_name)
 
         elif self.pername_rbutton.isChecked():
             counts = {}
@@ -192,15 +210,13 @@ class MyWindow(QWidget):
                 file = self.input_list.item(i).text()
                 counts[file] = counts.get(file, 0) + 1
                 new_name = self.generate_new_name(file, counts[file])
-                self.preview_list.addItem(new_name)
-                self.preview_results.append((file, new_name))
+                self.add_preview_item(file, new_name)
 
         else:
             for i in range(self.input_list.count()):
                 file = self.input_list.item(i).text()
                 new_name = self.generate_new_name(file)
-                self.preview_list.addItem(new_name)
-                self.preview_results.append((file, new_name))
+                self.add_preview_item(file, new_name)
 
     def export_log(self):
         if not self.preview_results:
