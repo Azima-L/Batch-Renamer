@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QListWidgetItem, QRadioButton, QPushButton, QFileDialog
 from PySide6.QtGui import QColor
+from core import generate_new_name
 import sys
 
 class MyWindow(QWidget):
@@ -162,24 +163,14 @@ class MyWindow(QWidget):
             self.input_list.takeItem(selected)
 
     def generate_new_name(self, name, number=None):
-        prefix = self.prefix_input.text()
-        suffix = self.suffix_input.text()
-        find = self.find_input.text()
-        replace = self.replace_input.text()
-
-        if find:
-            name = name.replace(find, replace)
-
-        if prefix:
-            name = prefix + name
-
-        if number is not None:
-            name = name + "_" + str(number).zfill(2)
-            
-        if suffix:
-            name = name + suffix
-
-        return name
+        return generate_new_name(
+            name,
+            prefix=self.prefix_input.text(),
+            suffix=self.suffix_input.text(),
+            find=self.find_input.text(),
+            replace=self.replace_input.text(),
+            number=number
+        )
 
     def add_preview_item(self, file, new_name):
         """Creates a coloured list item and appends the result pair to preview_results."""
