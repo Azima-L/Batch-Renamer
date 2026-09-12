@@ -6,7 +6,7 @@ import sys
 class MyWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Batch Renamer - Pipeline Tool")
+        self.setWindowTitle("Batch Data Transformer")
         self.setFixedSize(350, 400)
 
         master_layout = QVBoxLayout()
