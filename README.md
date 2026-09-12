@@ -1,17 +1,19 @@
-# Batch Renamer
+# Batch Data Transformer
 
-A lightweight **Python GUI desktop application** built with **PySide6** designed to simulate and preview batch renaming workflows. It provides a clean, modern dark-themed interface to manipulate a list of names with custom prefixes, suffixes, text replacement (find/replace rules), and automated numbering systems.
+A configurable tool for batch transformation of string-based data entries that supports prefix/suffix injection, find-replace operation, and auto-numbering (sequential or per-name) formatting and generation.
 
-This project serves as my practical exploration of GUI programming in Python and foundational tool development for a **Pipeline / Tools Technical Artist** path.
+The tool is built using PySide6 GUI, with an understanding of UX design: easy navigation, straightforward rules, color-coded output, and custom dark-themed UI built using Qt Style Sheets (QSS).
+
+#### Purpose of the tool:
+Batch transformation is a common requirement when it comes to data preparation and ETL (Extract, Transform, Load) workflows. This tool lets you standardize identifiers, apply naming convention across different datasets, and previewing changes before saving and committing your configured, customized data names. Overall, it demonstrates configurable transformation logic, real-time preview, and audit reporting: core skills in pipeline and data quality engineering.
 
 ---
 
-## Features & Architecture (v0.5.0)
+## Features & Architecture (v0.6.0)
 
-* **PySide6 (Qt) GUI Framework**: Built a standalone GUI utilizing `QVBoxLayout` and nested `QHBoxLayout` configurations for structured layout alignment. Implements a stylized dark-theme Qt Style Sheet (QSS) to maintain visual consistency with industry-standard DCC environments.
+* **PySide6 (Qt) GUI Framework**: Integrated an intuitive dual-column interface with real-time preview — shows original and transformed names side by side for validation before changes are committed. Implements a stylized Qt Style Sheets (QSS) to maintain friendly visual for the user to navigate the tool.
 * **Rule-Based Text Processing**: Allows users to instantly add custom prefixes and suffixes or use a find-and-replace tool to modify entire lists of names at once.
-* **Smart Auto-Numbering Modes**: Offers flexible numbering choices (None, Sequential numbering, or Per-name tracking) to help artists and TDs to apply their intended naming rules across project.
-* **Real-Time Visual Validation**: Features a side-by-side dual list view that shows the new names directly next to the original names, allowing quick visual checks before saving.
+* **Smart Auto-Numbering Modes**: Offers flexible numbering choices (None, Sequential numbering, or Per-name tracking) to apply consistent naming conventions across any dataset or project.
 * **Production Log Exporting**: Generates organized `.txt` reports via a native file saver dialog. It maps out `Old Name → New Name` relationships, which is useful for asset tracking and pipeline auditing.
 * **Error Prevention**: Built-in validation checks and console warning logs prevent the application from crashing if users accidentally try to export data before creating a preview.
 
@@ -27,7 +29,8 @@ This project serves as my practical exploration of GUI programming in Python and
 ## System Architecture
 
 ```text
-├── batch_renamer.py        # Primary PySide6 application containing everything (UI and validation logic)
+├── batch_renamer.py        # Primary application containing the UI and transformation logic
+├── core.py                 # Software-agnostic transformation logic
 ├── README.md               # Project documentation and developer overview
 ├── LICENSE                 # MIT Licensing details
 └── .gitignore              # Python .gitignore details
@@ -40,11 +43,11 @@ This project serves as my practical exploration of GUI programming in Python and
 Simply launch the application script via your command line interface:
 
 ```bash
-python asset_validator.py
+python batch_renamer.py
 ```
 1. Open `batch_renamer.py` file.
-2. Run the program and the application window titled **Batch Renamer** will pop up.
-3. Fill in your asset names inside the text input field that says `Add name`.
+2. Run the program and the application window titled **Batch Data Transformer** will pop up.
+3. Fill in your file names inside the text input field that says `Add name`.
 4. Remove any names that you don't want just by selecting it directly from the `Input names` box and click `Remove`.
 5. Customize the names with `Prefix`, `Suffix`, `Find`, and `Replace`.
 6. Select any of the options under `Auto-numbering` if needed.
